@@ -125,7 +125,7 @@ class ConfigProvider
                         'valence' => Valence::MOYERS
                     ],
                     [
-                        'text' => 'A freshly baked pie',
+                        'text' => 'Via a freshly baked pie',
                         'valence' => Valence::BIGGS
                     ]
                 ]
