@@ -1,0 +1,15 @@
+<?php
+
+declare(strict_types=1);
+
+$error = match ($this->code) {
+    404 => 'Not Found',
+    422 => 'Error',
+    default => 'Internal Server Error'
+};
+
+?>
+    <h5 class="card-title text-danger"><?= $this->escape($error); ?></h5>
+<?php if ($this->message) { ?>
+    <pre class="overflow-auto"><?= $this->escape($this->message); ?></pre>
+<?php }

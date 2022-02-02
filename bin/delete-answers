@@ -1,0 +1,26 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use CliffordVickrey\MoyersBiggs\Infrastructure\Io\Io;
+
+chdir(__DIR__);
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+$folders = ['event-count', 'frequencies', 'log'];
+
+$io = new Io();
+
+foreach ($folders as $folder) {
+    $files = $io->glob(__DIR__ . "/../data/$folder/*");
+
+    foreach ($files as $file) {
+        if (str_ends_with($file, '.gitignore')) {
+            continue;
+        }
+
+        $io->unlink($file);
+    }
+}

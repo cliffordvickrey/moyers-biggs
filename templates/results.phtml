@@ -1,0 +1,47 @@
+<?php
+
+declare(strict_types=1);
+
+use CliffordVickrey\MoyersBiggs\Domain\Entity\Score;
+use CliffordVickrey\MoyersBiggs\Domain\Enum\Valence;
+
+/** @var Score $score */
+$score = $this->score;
+$type = $score->getValence()->toType();
+$valence = (string)$score->getValence();
+
+$numberFormatter = new NumberFormatter('en_US', NumberFormatter::PERCENT);
+$percentage = $numberFormatter->format($score->getPercentage());
+
+switch ($valence) {
+    case Valence::BIGGS:
+        $ccVersion = '2.0';
+        $commonsImage = 'File:Jason_Biggs_at_Paley_Fest_Orange_Is_The_New_Black.jpg';
+        $credit = 'Dominick D';
+        break;
+    default:
+        $ccVersion = '3.0';
+        $commonsImage = 'File:Bill_Moyers_by_Gage_Skidmore.jpg';
+        $credit = 'Gage Skidmore';
+        break;
+}
+
+?>
+<h5 class="card-title text-center">
+    Your personality type is <span class="text-info"><?= $this->escape($type); ?></span>
+    <span class="text-muted">(<?= $this->escape($valence); ?>; <?= $this->escape($percentage); ?>)</span>
+</h5>
+<div class="card-text text-center">
+    <figure class="figure mt-3">
+        <img src="<?= $this->image(strtolower("$valence.jpg")); ?>" class="figure-img img-fluid rounded"
+             alt="<?= $this->escape($valence); ?>">
+        <figcaption class="figure-caption text-center">
+            <a href="https://commons.wikimedia.org/wiki/<?= $commonsImage; ?>"><?= $credit; ?></a>,
+            <a href="https://creativecommons.org/licenses/by-sa/<?= $ccVersion; ?>">CC BY-SA <?= $ccVersion; ?></a>, via
+            Wikimedia Commons
+        </figcaption>
+    </figure>
+    <div>
+        <a href="<?= $this->url(''); ?>">(Take it again!)</a>
+    </div>
+</div>

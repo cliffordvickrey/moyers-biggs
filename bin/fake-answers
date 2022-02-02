@@ -1,0 +1,59 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use CliffordVickrey\MoyersBiggs\App\Controller\SaveEventController;
+use CliffordVickrey\MoyersBiggs\App\Controller\SaveFrequenciesController;
+use CliffordVickrey\MoyersBiggs\App\Route\Route;
+use CliffordVickrey\MoyersBiggs\Domain\Entity\Questionnaire;
+use CliffordVickrey\MoyersBiggs\Domain\Entity\State;
+use CliffordVickrey\MoyersBiggs\Domain\Repository\QuestionnaireRepositoryInterface;
+use CliffordVickrey\MoyersBiggs\Infrastructure\Clock\Clock;
+use CliffordVickrey\MoyersBiggs\Infrastructure\Container\DependencyInjectionContainer;
+use CliffordVickrey\MoyersBiggs\Infrastructure\Http\HttpRequest;
+use CliffordVickrey\MoyersBiggs\Infrastructure\Io\Io;
+use CliffordVickrey\MoyersBiggs\Infrastructure\Io\IoInterface;
+
+$k = 0;
+
+if (is_numeric($argv[1] ?? null)) {
+    $k = (int)$argv[1];
+}
+
+if ($k < 1) {
+    throw new InvalidArgumentException('Invalid number of answers provided');
+}
+
+chdir(__DIR__);
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+$config = require __DIR__ . '/../app/config.php';
+
+$container = new DependencyInjectionContainer($config);
+
+$io = $container->getService(IoInterface::class);
+
+if ($io instanceof Io) {
+    $io->disableLocking();
+}
+
+$clock = $container->getService(Clock::class);
+$questionnaireRepository = $container->getService(QuestionnaireRepositoryInterface::class);
+$questionnaire = $questionnaireRepository->getQuestionnaireById(0);
+
+$saveEventController = $container->getService(SaveEventController::class);
+$saveFrequenciesController = $container->getService(SaveFrequenciesController::class);
+
+for ($i = 0; $i < $k; $i++) {
+    $state = new State(0, $clock->now());
+
+    foreach ($questionnaire as $question) {
+        $state[] = rand(0, count($question) - 1);
+    }
+
+    $request = new HttpRequest(Route::ROUTE_NONE, [Questionnaire::class => $questionnaire, State::class => $state]);
+    $saveEventController->dispatch($request);
+    $saveFrequenciesController->dispatch($request);
+}

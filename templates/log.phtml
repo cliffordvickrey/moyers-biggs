@@ -1,0 +1,106 @@
+<?php
+
+declare(strict_types=1);
+
+use CliffordVickrey\MoyersBiggs\Domain\Entity\Event;
+use CliffordVickrey\MoyersBiggs\Domain\Entity\EventCollection;
+use CliffordVickrey\MoyersBiggs\Domain\Entity\Questionnaire;
+
+/** @var EventCollection $events */
+$events = $this->events;
+/** @var int $page */
+$page = $this->page;
+/** @var int $pageCount */
+$pageCount = $this->pageCount;
+/** @var Questionnaire $questionnaire */
+$questionnaire = $this->questionnaire;
+
+$pagerItems = array_filter(range($page - 2, $page + 2), fn(int $p): bool => $p >= 1 && $p <= $pageCount);
+
+$numberFormatter = new NumberFormatter('en_US', NumberFormatter::DECIMAL);
+
+?>
+<h5 class="card-title">Log <span class="text-muted"><?= sprintf('(page %d of %d)', $page, $pageCount); ?></span></h5>
+<table class="table table-bordered table-responsive table-sm mt-3">
+    <colgroup>
+        <col span="4" class="w-25">
+    </colgroup>
+    <thead>
+    <tr>
+        <th>Event ID</th>
+        <th>Submitted</th>
+        <th>Time Spent</th>
+        <th>Answers</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php
+
+    $tabIndex = -1;
+
+    foreach ($events as $eventId => $event) {
+        /** @var Event $event */
+        $stopTime = $event->getStopTime();
+        $diff = $event->getStartTime()->diff($stopTime);
+
+        $id = $event->getId();
+        $idParts = explode('-', $id);
+        $firstPart = $idParts[0] ?? '';
+
+        ?>
+        <tr>
+            <td>
+                <a href="#" data-bs-toggle="tooltip" data-bs-placement="top"
+                   title="<?= $this->escape($id); ?>">
+                    <?= $this->escape($firstPart); ?>
+                </a>
+            </td>
+            <td>
+                <?= $this->escape($stopTime->format('n/j/y g:i A')); ?>
+            </td>
+            <td>
+                <?= sprintf('%d seconds', $diff->days * 86400 + $diff->h * 3600 + $diff->i * 60 + $diff->s); ?>
+            </td>
+            <td>
+                <?php foreach ($event as $questionId => $answerId) {
+                    $question = $questionnaire[$questionId];
+                    $answer = $question[$answerId];
+                    ?><a href="#" data-bs-toggle="popover" title="Q: <?= $this->escape($question->getText()); ?>"
+                         data-bs-content="A: <?= $this->escape($answer->getText()); ?>"
+                         tabindex="<?= ++$tabIndex; ?>" data-bs-trigger="hover focus"
+                    ><?= $this->escape($answer->getValence()->toType()); ?></a><?php
+                } ?>
+            </td>
+        </tr>
+    <?php } ?>
+    </tbody>
+</table>
+<nav aria-label="Pager">
+    <ul class="pagination">
+        <?php if ($page > 1) { ?>
+            <li class="page-item">
+                <a class="page-link" href="<?= $this->url('log/1'); ?>">|&lt;</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="<?= $this->url(sprintf('log/%d', $page - 1)); ?>">&lt;</a>
+            </li>
+        <?php } ?>
+        <?php foreach ($pagerItems as $pagerItem) {
+            $pageActive = $pagerItem === $page;
+            ?>
+            <li class="page-item<?= $pageActive ? ' active' : ''; ?>"<?= $pageActive ? ' aria-current="page"' : ''; ?>>
+                <a href="<?= $this->url(sprintf('log/%d', $pagerItem)); ?>" class="page-link">
+                    <?= $this->escape($numberFormatter->format($pagerItem)); ?>
+                </a>
+            </li>
+        <?php } ?>
+        <?php if ($page < $pageCount) { ?>
+            <li class="page-item">
+                <a class="page-link" href="<?= $this->url(sprintf('log/%d', $page + 1)); ?>">&gt;</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="<?= $this->url(sprintf('log/%d', $pageCount)); ?>">&gt;|</a>
+            </li>
+        <?php } ?>
+    </ul>
+</nav>

@@ -1,0 +1,93 @@
+<?php
+
+declare(strict_types=1);
+
+use CliffordVickrey\MoyersBiggs\Domain\Entity\Questionnaire;
+use CliffordVickrey\MoyersBiggs\Domain\Enum\Valence;
+
+/** @var Questionnaire $questionnaire */
+$questionnaire = $this->questionnaire;
+
+$numberFormatter = new NumberFormatter('en_US', NumberFormatter::DECIMAL);
+
+$percentFormatter = new NumberFormatter('en_US', NumberFormatter::PERCENT);
+$percentFormatter->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 2);
+$percentFormatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 2);
+
+$frequenciesByValence = [
+    Valence::BIGGS => 0,
+    Valence::MOYERS => 0
+];
+
+$score = $questionnaire->getAverageScore();
+$type = $score->getValence()->toType();
+$valence = (string)$score->getValence();
+
+?><h5 class="card-title">Stats</h5>
+<div class="card-text">
+    The mean personality type is <span class="text-info"><?= $this->escape($type); ?></span>
+    <span class="text-muted">(<?= $this->escape($valence); ?>;
+        <?= $this->escape($percentFormatter->format($score->getPercentage())); ?>;
+        <?= $this->escape($numberFormatter->format($questionnaire->getFrequency())); ?> respondents)</span>
+</div>
+<div class="accordion mt-3" id="stats-accordion">
+    <?php foreach ($questionnaire as $i => $question) {
+        $cId = sprintf('collapse-%d', $i);
+        $hId = sprintf('header-%d', $i);
+        $questionTotal = $question->getFrequency();
+
+        ?>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="<?= $hId; ?>">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#<?= $cId; ?>"
+                        aria-expanded="true" aria-controls="<?= $cId; ?>">
+                    Question <?= $this->escape($numberFormatter->format($i + 1)); ?>
+                </button>
+            </h2>
+            <div id="<?= $cId; ?>" class="accordion-collapse collapse show" aria-labelledby="<?= $hId; ?>"
+                 data-bs-parent="#stats-accordion">
+                <div class="accordion-body">
+                    <?= $this->escape($question->getText()); ?>
+                    <table class="table table-bordered table-sm mt-3 w-100" style="table-layout: fixed;">
+                        <colgroup>
+                            <col span="1" class="w-50">
+                            <col span="2" class="w-25">
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th>Answer</th>
+                            <th>Frequency</th>
+                            <th>Percent</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php foreach ($question as $answer) {
+                            $answerHtml = $this->escape($answer->getText());
+                            $answerTotal = $answer->getFrequency();
+
+                            ?>
+                            <tr>
+                                <td class="text-truncate text-nowrap overflow-hidden">
+                                    <a href="#" class="text-truncate overflow-hidden" style="max-width: 100%;"
+                                       data-bs-toggle="tooltip" data-bs-placement="top" title="<?= $answerHtml; ?>">
+                                        <?= $answerHtml; ?>
+                                    </a>
+                                </td>
+                                <td><?= $this->escape($numberFormatter->format($answerTotal)); ?></td>
+                                <td><?= $this->escape($percentFormatter->format($answerTotal / $questionTotal)); ?></td>
+                            </tr>
+                        <?php } ?>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td>Total</td>
+                            <td><?= $this->escape($numberFormatter->format($questionTotal)); ?></td>
+                            <td><?= $this->escape($percentFormatter->format(1)); ?></td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    <?php } ?>
+</div>

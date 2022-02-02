@@ -1,0 +1,46 @@
+{
+  "name": "cliffordvickrey/moyers-biggs",
+  "description": "The Moyers-Biggs Personality Test",
+  "type": "library",
+  "license": [
+    "MIT"
+  ],
+  "autoload": {
+    "psr-4": {
+      "CliffordVickrey\\MoyersBiggs\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "CliffordVickrey\\MoyersBiggs\\Tests\\": "tests/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Clifford Vickrey",
+      "email": "clifforddavidvickrey@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "~8.0|~8.1"
+  },
+  "config": {
+    "process-timeout": 0
+  },
+  "require-dev": {
+    "phpstan/phpstan": "^1.0",
+    "phpunit/phpunit": "^9.0",
+    "psr/container": "^2.0",
+    "squizlabs/php_codesniffer": "^3.0",
+    "jetbrains/phpstorm-attributes": "^1.0"
+  },
+  "scripts": {
+    "analyse": "vendor/bin/phpstan analyse src tests --level 9",
+    "baseline": "vendor/bin/phpstan analyse src tests --level 9 --generate-baseline",
+    "delete-answers": "@php bin/delete-answers",
+    "fake-answers": "@php bin/fake-answers",
+    "phpcs": "vendor/bin/phpcs",
+    "phpcbf": "vendor/bin/phpcbf",
+    "test": "phpunit"
+  }
+}

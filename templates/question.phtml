@@ -1,0 +1,27 @@
+<?php
+
+declare(strict_types=1);
+
+$questionId = $this->escape((string)($this->questionId + 1));
+
+if (isset($this->error)) { ?>
+    <div class="alert alert-danger" role="alert">
+        <?= $this->escape($this->error); ?>
+    </div>
+<?php } ?>
+<form method="get" action="<?= $this->url(sprintf('question/%d', $questionId)); ?>">
+    <h5 class="card-title"><?= $this->escape($this->question->getText()); ?></h5>
+    <?php foreach ($this->question as $i => $answer) {
+        $answerId = $this->escape((string)$i);
+        $checked = ($this->answerId ?? null) === $i ? 'checked ' : '';
+        ?>
+        <div class="my-3">
+            <input autocomplete="off" <?= $checked; ?>type="radio" id="a<?= $answerId; ?>" name="a"
+                   class="form-check-input" value="<?= $answerId; ?>">
+            <label for="a<?= $answerId; ?>" class="form-check-label d-inline">
+                <?= $this->escape($answer->getText()); ?>
+            </label>
+        </div>
+    <?php } ?>
+    <button class="btn btn-primary" type="submit">Submit</button>
+</form>
