@@ -74,7 +74,9 @@ $valence = (string)$score->getValence();
                                     </a>
                                 </td>
                                 <td><?= $this->escape($numberFormatter->format($answerTotal)); ?></td>
-                                <td><?= $this->escape($percentFormatter->format($answerTotal / $questionTotal)); ?></td>
+                                <td><?= $this->escape($percentFormatter->format(
+                                        $answerTotal / ($questionTotal ?: 1)
+                                    )); ?></td>
                             </tr>
                         <?php } ?>
                         </tbody>

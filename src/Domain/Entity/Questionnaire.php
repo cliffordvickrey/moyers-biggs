@@ -165,7 +165,7 @@ final class Questionnaire extends Collection
         /** @var non-empty-array<string, float> $percentagesByValence */
         $percentagesByValence = array_combine(
             array_keys($sumsByValence),
-            array_map(fn(int $sum) => round($sum / $sumOfSums, 2), $sumsByValence)
+            array_map(fn(int $sum) => round($sum / ($sumOfSums ?: 1), 2), $sumsByValence)
         );
 
         arsort($percentagesByValence, SORT_NUMERIC);
