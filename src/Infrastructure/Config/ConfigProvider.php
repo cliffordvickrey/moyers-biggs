@@ -32,6 +32,7 @@ use CliffordVickrey\MoyersBiggs\Infrastructure\Factory\App\Controller\StatsContr
 use CliffordVickrey\MoyersBiggs\Infrastructure\Factory\Domain\Repository\EventRepositoryFactory;
 use CliffordVickrey\MoyersBiggs\Infrastructure\Factory\Domain\Repository\QuestionnaireRepositoryFactory;
 use CliffordVickrey\MoyersBiggs\Infrastructure\Factory\Domain\Repository\StateRepositoryFactory;
+use CliffordVickrey\MoyersBiggs\Infrastructure\Factory\Infrastructure\View\ViewRendererFactory;
 use CliffordVickrey\MoyersBiggs\Infrastructure\Io\Io;
 use CliffordVickrey\MoyersBiggs\Infrastructure\Io\IoInterface;
 use CliffordVickrey\MoyersBiggs\Infrastructure\Session\Session;
@@ -95,7 +96,8 @@ class ConfigProvider
                 SaveEventController::class => SaveEventControllerFactory::class,
                 SaveFrequenciesController::class => SaveFrequenciesControllerFactory::class,
                 StateRepositoryInterface::class => StateRepositoryFactory::class,
-                StatsController::class => StatsControllerFactory::class
+                StatsController::class => StatsControllerFactory::class,
+                ViewRendererInterface::class => ViewRendererFactory::class
             ]
         ];
     }
