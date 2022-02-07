@@ -19,8 +19,32 @@ $pagerItems = array_filter(range($page - 2, $page + 2), fn(int $p): bool => $p >
 
 $numberFormatter = new NumberFormatter('en_US', NumberFormatter::DECIMAL);
 
+try {
+    $dateTimeZone = new DateTimeZone($this->timeZone);
+} catch (Throwable) {
+    $dateTimeZone = null;
+}
+
+$trailing = '';
+if ('est' !== $this->timeZone) {
+    $trailing = '?' . http_build_query(['timezone' => $this->timeZone]);
+}
+
 ?>
 <h5 class="card-title">Log <span class="text-muted"><?= sprintf('(page %d of %d)', $page, $pageCount); ?></span></h5>
+<div class="input-group my-3">
+    <label for="time-zone" class="visually-hidden">Time Zone</label>
+    <span class="input-group-text" id="basic-addon1">Time Zone</span>
+    <select id="time-zone" class="form-select" autocomplete="off">
+        <?php foreach ($this->timeZones as $timeZoneId => $timeZoneDescription) {
+            $selected = $this->timeZone === $timeZoneId ? ' selected="selected"' : '';
+            ?>
+            <option value="<?= $this->escape((string)$timeZoneId); ?>"<?= $selected; ?>>
+                <?= $this->escape($timeZoneDescription); ?>
+            </option>
+        <?php } ?>
+    </select>
+</div>
 <table class="table table-bordered table-responsive table-sm mt-3">
     <colgroup>
         <col span="4" class="w-25">
@@ -29,7 +53,7 @@ $numberFormatter = new NumberFormatter('en_US', NumberFormatter::DECIMAL);
     <tr>
         <th>Event ID</th>
         <th>Submitted</th>
-        <th>Time Spent</th>
+        <th>Time<span class="d-none d-sm-inline"> Spent</span></th>
         <th>Answers</th>
     </tr>
     </thead>
@@ -43,9 +67,16 @@ $numberFormatter = new NumberFormatter('en_US', NumberFormatter::DECIMAL);
         $stopTime = $event->getStopTime();
         $diff = $event->getStartTime()->diff($stopTime);
 
+        if (null !== $dateTimeZone) {
+            $stopTime = $stopTime->setTimezone($dateTimeZone);
+        }
+
         $id = $event->getId();
         $idParts = explode('-', $id);
         $firstPart = $idParts[0] ?? '';
+
+        $time = $this->escape($stopTime->format('n/j/y g:i A'));
+        $seconds = sprintf('%d', $diff->days * 86400 + $diff->h * 3600 + $diff->i * 60 + $diff->s);
 
         ?>
         <tr>
@@ -56,10 +87,16 @@ $numberFormatter = new NumberFormatter('en_US', NumberFormatter::DECIMAL);
                 </a>
             </td>
             <td>
-                <?= $this->escape($stopTime->format('n/j/y g:i A')); ?>
+                <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="<?= $this->escape($time); ?>"
+                   class="d-block d-sm-none text-truncate overflow-hidden" style="max-width: 100%;">
+                    <?= $this->escape($time); ?>
+                </a>
+                <div class="d-none d-sm-block">
+                    <?= $this->escape($time); ?>
+                </div>
             </td>
             <td>
-                <?= sprintf('%d seconds', $diff->days * 86400 + $diff->h * 3600 + $diff->i * 60 + $diff->s); ?>
+                <?= $seconds; ?> sec<span class="d-none d-sm-inline">onds</span>
             </td>
             <td>
                 <?php foreach ($event as $questionId => $answerId) {
@@ -79,28 +116,31 @@ $numberFormatter = new NumberFormatter('en_US', NumberFormatter::DECIMAL);
     <ul class="pagination">
         <?php if ($page > 1) { ?>
             <li class="page-item">
-                <a class="page-link" href="<?= $this->url('log/1'); ?>">|&lt;</a>
+                <a class="page-link" href="<?= $this->url('log/1') . $trailing; ?>">|&lt;</a>
             </li>
             <li class="page-item">
-                <a class="page-link" href="<?= $this->url(sprintf('log/%d', $page - 1)); ?>">&lt;</a>
+                <a class="page-link" href="<?= $this->url(sprintf('log/%d', $page - 1)) . $trailing; ?>">&lt;</a>
             </li>
         <?php } ?>
         <?php foreach ($pagerItems as $pagerItem) {
             $pageActive = $pagerItem === $page;
             ?>
             <li class="page-item<?= $pageActive ? ' active' : ''; ?>"<?= $pageActive ? ' aria-current="page"' : ''; ?>>
-                <a href="<?= $this->url(sprintf('log/%d', $pagerItem)); ?>" class="page-link">
+                <a href="<?= $this->url(sprintf('log/%d', $pagerItem)) . $trailing; ?>" class="page-link">
                     <?= $this->escape($numberFormatter->format($pagerItem)); ?>
                 </a>
             </li>
         <?php } ?>
         <?php if ($page < $pageCount) { ?>
             <li class="page-item">
-                <a class="page-link" href="<?= $this->url(sprintf('log/%d', $page + 1)); ?>">&gt;</a>
+                <a class="page-link" href="<?= $this->url(sprintf('log/%d', $page + 1)) . $trailing; ?>">&gt;</a>
             </li>
             <li class="page-item">
-                <a class="page-link" href="<?= $this->url(sprintf('log/%d', $pageCount)); ?>">&gt;|</a>
+                <a class="page-link" href="<?= $this->url(sprintf('log/%d', $pageCount)) . $trailing; ?>">&gt;|</a>
             </li>
         <?php } ?>
     </ul>
 </nav>
+<form id="time-zone-form" method="get" action="<?= $this->url(sprintf('log/%d', $page)); ?>" class="d-none">
+    <input type="hidden" name="timezone" value=""/>
+</form>

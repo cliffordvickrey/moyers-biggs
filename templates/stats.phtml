@@ -39,13 +39,14 @@ $valence = (string)$score->getValence();
         ?>
         <div class="accordion-item">
             <h2 class="accordion-header" id="<?= $hId; ?>">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#<?= $cId; ?>"
-                        aria-expanded="true" aria-controls="<?= $cId; ?>">
+                <button class="accordion-button<?= $i ? ' collapsed' : ''; ?>" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#<?= $cId; ?>" aria-expanded="<?= $i ? 'false' : 'true'; ?>"
+                        aria-controls="<?= $cId; ?>">
                     Question <?= $this->escape($numberFormatter->format($i + 1)); ?>
                 </button>
             </h2>
-            <div id="<?= $cId; ?>" class="accordion-collapse collapse show" aria-labelledby="<?= $hId; ?>"
-                 data-bs-parent="#stats-accordion">
+            <div id="<?= $cId; ?>" class="accordion-collapse collapse<?= $i ? '' : ' show'; ?>"
+                 aria-labelledby="<?= $hId; ?>" data-bs-parent="#stats-accordion">
                 <div class="accordion-body">
                     <?= $this->escape($question->getText()); ?>
                     <table class="table table-bordered table-sm mt-3 w-100" style="table-layout: fixed;">

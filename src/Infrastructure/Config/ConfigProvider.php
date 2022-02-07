@@ -39,8 +39,13 @@ use CliffordVickrey\MoyersBiggs\Infrastructure\Session\Session;
 use CliffordVickrey\MoyersBiggs\Infrastructure\Session\SessionInterface;
 use CliffordVickrey\MoyersBiggs\Infrastructure\View\ViewRenderer;
 use CliffordVickrey\MoyersBiggs\Infrastructure\View\ViewRendererInterface;
+use DateTimeZone;
 use JetBrains\PhpStorm\ArrayShape;
-use JetBrains\PhpStorm\Pure;
+
+use function is_string;
+use function sprintf;
+use function str_replace;
+use function strtoupper;
 
 /**
  * Structured configuration for the application
@@ -55,9 +60,9 @@ class ConfigProvider
         DependencyInjectionContainerInterface::class => "mixed",
         LogController::class => "mixed",
         Questionnaire::class => "mixed",
-        'root' => "string"
+        'root' => "string",
+        'version' => "string"
     ])]
-    #[Pure]
     public function __invoke(): array
     {
         return [
@@ -65,7 +70,8 @@ class ConfigProvider
             DependencyInjectionContainerInterface::class => $this->getDependencies(),
             LogController::class => $this->getLogControllerConfig(),
             Questionnaire::class => $this->getQuestionnaireConfig(),
-            'root' => '/'
+            'root' => '/',
+            'version' => '1.0'
         ];
     }
 
@@ -103,12 +109,38 @@ class ConfigProvider
     }
 
     /**
-     * @return array<string, int>
+     * @return array<string, mixed>
      */
-    #[ArrayShape(['resultsPerPage' => "int"])]
+    #[ArrayShape(['resultsPerPage' => "int", 'timeZones' => "array"])]
     private function getLogControllerConfig(): array
     {
-        return ['resultsPerPage' => 30];
+        return ['resultsPerPage' => 30, 'timeZones' => self::getTimeZones()];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public static function getTimeZones(): array
+    {
+        $abbreviations = DateTimeZone::listAbbreviations();
+
+        $timeZones = [];
+
+        foreach ($abbreviations as $abbreviation => $timeZoneData) {
+            $timeZoneId = $timeZoneData[0]['timezone_id'] ?? null;
+
+            if (!is_string($timeZoneId)) {
+                continue;
+            }
+
+            $timeZones[$abbreviation] = sprintf(
+                '%s (%s)',
+                strtoupper($abbreviation),
+                str_replace('_', ' ', $timeZoneId)
+            );
+        }
+
+        return $timeZones;
     }
 
     /**

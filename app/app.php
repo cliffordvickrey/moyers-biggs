@@ -15,8 +15,8 @@ require_once '../vendor/autoload.php';
 
 call_user_func(function () {
     // error handler
+    /** @phpstan-ignore-next-line */
     set_error_handler([ErrorHandler::class, 'handle']);
-
     $config = require 'config.php';
 
     $root = '/';
@@ -25,7 +25,7 @@ call_user_func(function () {
         $root = $config['root'];
     }
 
-    $path = preg_replace(
+    $path = (string)preg_replace(
         sprintf('/^%s/', preg_quote($root, '/')),
         '',
         (string)parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)
@@ -39,7 +39,10 @@ call_user_func(function () {
             break;
         case Route::ROUTE_LOG:
             $route = Route::ROUTE_LOG;
-            $attributes = [Route::ATTRIBUTE_PAGE => filter_var($param, FILTER_SANITIZE_NUMBER_INT)];
+            $attributes = [
+                Route::ATTRIBUTE_PAGE => filter_var($param, FILTER_SANITIZE_NUMBER_INT),
+                Route::ATTRIBUTE_TIME_ZONE => $_GET['timezone'] ?? null
+            ];
             break;
         case Route::ROUTE_QUESTION:
             $route = Route::ROUTE_QUESTION;

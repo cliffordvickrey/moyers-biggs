@@ -43,10 +43,17 @@ final class LogControllerFactory implements FactoryInterface
             $recordsPerPage = 1;
         }
 
+        $timeZones = $logConfig['timeZones'] ?? null;
+
+        if (!is_array($timeZones)) {
+            $timeZones = null;
+        }
+
         return new LogController(
             $container->getService(EventRepositoryInterface::class),
             $container->getService(QuestionnaireRepositoryInterface::class),
-            $recordsPerPage
+            $recordsPerPage,
+            $timeZones
         );
     }
 }

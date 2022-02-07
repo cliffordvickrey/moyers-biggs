@@ -15,22 +15,26 @@ use const DIRECTORY_SEPARATOR;
 final class ViewRenderer implements ViewRendererInterface
 {
     private HeaderEmitterInterface $headerEmitter;
+    private string $version;
     private string $root;
     private string $templatePath;
 
     /**
      * @param string|null $root
+     * @param string|null $version
      * @param string|null $templatePath
      * @param HeaderEmitterInterface|null $headerEmitter
      */
     #[Pure]
     public function __construct(
         ?string $root = null,
+        ?string $version = null,
         ?string $templatePath = null,
         ?HeaderEmitterInterface $headerEmitter = null
     ) {
         $this->headerEmitter = $headerEmitter ?? new HeaderEmitter();
         $this->root = $root ?? '/';
+        $this->version = $version ?? '1.0';
         $this->templatePath = $templatePath ?? (__DIR__ . '/../../../templates');
     }
 
@@ -112,6 +116,7 @@ final class ViewRenderer implements ViewRendererInterface
         $viewModel->setPartial('layout');
         $viewModel->setParam('content', $content);
         $viewModel->setParam('child', $child);
+        $viewModel->setParam('version', $this->version);
         return $this->render($viewModel);
     }
 }

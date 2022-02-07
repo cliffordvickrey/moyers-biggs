@@ -25,6 +25,12 @@ class ViewRendererFactory implements FactoryInterface
             $root = null;
         }
 
-        return new ViewRenderer($root);
+        $version = $config['version'] ?? null;
+
+        if (!is_string($version)) {
+            $version = null;
+        }
+
+        return new ViewRenderer($root, $version);
     }
 }

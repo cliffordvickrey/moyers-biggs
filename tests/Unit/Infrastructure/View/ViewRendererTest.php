@@ -23,7 +23,7 @@ class ViewRendererTest extends TestCase
     public function setUp(): void
     {
         $this->headerEmitter = new MockHeaderEmitter();
-        $this->viewRenderer = new ViewRenderer(null, __DIR__, $this->headerEmitter);
+        $this->viewRenderer = new ViewRenderer(null, null, __DIR__, $this->headerEmitter);
     }
 
     /**

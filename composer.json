@@ -35,8 +35,8 @@
     "jetbrains/phpstorm-attributes": "^1.0"
   },
   "scripts": {
-    "analyse": "vendor/bin/phpstan analyse src tests --level 9",
-    "baseline": "vendor/bin/phpstan analyse src tests --level 9 --generate-baseline",
+    "analyse": "vendor/bin/phpstan analyse",
+    "baseline": "vendor/bin/phpstan analyse --generate-baseline",
     "delete-answers": "@php bin/delete-answers",
     "fake-answers": "@php bin/fake-answers",
     "phpcs": "vendor/bin/phpcs",

@@ -88,4 +88,36 @@ class LogControllerTest extends TestCase
         self::assertEquals('2', $events[0]->getId());
         self::assertEquals('3', $events[1]->getId());
     }
+
+    /**
+     * @return void
+     */
+    public function testDispatchWithInvalidPage(): void
+    {
+        $viewModel = $this->logController->dispatch(new HttpRequest(Route::ROUTE_LOG, [
+            Route::ATTRIBUTE_PAGE => 4
+        ]));
+
+        self::assertEquals('log', $viewModel->getPartial());
+
+        $params = $viewModel->getParams();
+
+        self::assertEquals(3, $params['page']);
+    }
+
+    /**
+     * @return void
+     */
+    public function testDispatchWithInvalidTimeZone(): void
+    {
+        $viewModel = $this->logController->dispatch(new HttpRequest(Route::ROUTE_LOG, [
+            Route::ATTRIBUTE_TIME_ZONE => 'blah'
+        ]));
+
+        self::assertEquals('log', $viewModel->getPartial());
+
+        $params = $viewModel->getParams();
+
+        self::assertEquals('est', $params['timeZone']);
+    }
 }

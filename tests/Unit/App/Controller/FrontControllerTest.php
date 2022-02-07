@@ -48,7 +48,7 @@ class FrontControllerTest extends TestCase
         $mockContainer = new MockDependencyInjectionContainer(
             [
                 DefaultController::class => new DefaultController(new StateRepository(new MockSession())),
-                ViewRendererInterface::class => new ViewRenderer(null, null, new MockHeaderEmitter())
+                ViewRendererInterface::class => new ViewRenderer(null, null, null, new MockHeaderEmitter())
             ],
             ['routes' => [
                 'blah' => DefaultController::class,
