@@ -33,9 +33,9 @@ if ('est' !== $this->timeZone) {
 ?>
 <h5 class="card-title">Log <span class="text-muted"><?= sprintf('(page %d of %d)', $page, $pageCount); ?></span></h5>
 <div class="input-group my-3">
-    <label for="time-zone" class="visually-hidden">Time Zone</label>
-    <span class="input-group-text" id="basic-addon1">Time Zone</span>
-    <select id="time-zone" class="form-select" autocomplete="off">
+    <span class="input-group-text" id="time-zone-addon">Time Zone</span>
+    <select id="time-zone" class="form-select" autocomplete="off" aria-label="Time Zone"
+            aria-describedby="time-zone-addon">
         <?php foreach ($this->timeZones as $timeZoneId => $timeZoneDescription) {
             $selected = $this->timeZone === $timeZoneId ? ' selected="selected"' : '';
             ?>

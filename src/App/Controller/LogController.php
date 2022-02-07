@@ -50,12 +50,6 @@ final class LogController implements ControllerInterface
      */
     public function dispatch(HttpRequest $request): ViewModel
     {
-        $timeZone = $request->getAttribute(Route::ATTRIBUTE_TIME_ZONE) ?? 'est';
-
-        if (!is_string($timeZone) || !isset($this->timeZones[$timeZone])) {
-            $timeZone = 'est';
-        }
-
         $questionnaireId = (int)$request->getId(Route::ATTRIBUTE_QUESTIONNAIRE_ID);
         $page = $request->getId(Route::ATTRIBUTE_PAGE) ?: 1;
 
@@ -80,8 +74,23 @@ final class LogController implements ControllerInterface
         $viewModel->setParam('page', $page);
         $viewModel->setParam('pageCount', $pageCount);
         $viewModel->setParam('questionnaire', $this->questionnaireRepository->getQuestionnaireById($questionnaireId));
-        $viewModel->setParam('timeZone', $timeZone);
+        $viewModel->setParam('timeZone', $this->getTimeZone($request));
         $viewModel->setParam('timeZones', $this->timeZones);
         return $viewModel;
+    }
+
+    /**
+     * @param HttpRequest $request
+     * @return string
+     */
+    private function getTimeZone(HttpRequest $request): string
+    {
+        $timeZone = $request->getAttribute(Route::ATTRIBUTE_TIME_ZONE) ?? 'est';
+
+        if (!is_string($timeZone) || !isset($this->timeZones[$timeZone])) {
+            return 'est';
+        }
+
+        return $timeZone;
     }
 }

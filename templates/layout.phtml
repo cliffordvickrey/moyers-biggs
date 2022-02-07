@@ -15,13 +15,25 @@ $tab = match ($partial) {
     default => ''
 };
 
+$trailing = match ($partial) {
+    'log' => ' - Log',
+    'stats' => ' - Stats',
+    'results' => ' - Results',
+    default => ''
+};
+
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta content="IE=edge" http-equiv="X-UA-Compatible">
     <meta content="width=device-width,initial-scale=1" name="viewport">
-    <title>The Moyers-Biggs Personality Test</title>
+    <meta content="https://www.cliffordvickrey.com/mb" property="og:url"/>
+    <meta content="The Moyers-Biggs Personality Test" property="og:title"/>
+    <meta content="The world's most insightful psychological questionnaire" property="og:description"/>
+    <meta content="https://www.cliffordvickrey.com/mb/images/psi.png" property="og:image"/>
+    <meta content="The world's most insightful psychological questionnaire" name="description"/>
+    <title>The Moyers-Biggs Personality Test<?= $trailing; ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
