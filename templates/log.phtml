@@ -116,27 +116,28 @@ if ('est' !== $this->timeZone) {
 <nav aria-label="Pager" style="overflow-x: auto;">
     <ul class="pagination small">
         <?php if ($page > 1) { ?>
-            <li class="page-item">
+            <li class="page-item text-nowrap">
                 <a class="page-link" href="<?= $this->url('log/1') . $trailing; ?>">|&lt;</a>
             </li>
-            <li class="page-item">
+            <li class="page-item text-nowrap">
                 <a class="page-link" href="<?= $this->url(sprintf('log/%d', $page - 1)) . $trailing; ?>">&lt;</a>
             </li>
         <?php } ?>
         <?php foreach ($pagerItems as $pagerItem) {
             $pageActive = $pagerItem === $page;
             ?>
-            <li class="page-item<?= $pageActive ? ' active' : ''; ?>"<?= $pageActive ? ' aria-current="page"' : ''; ?>>
+            <li class="page-item text-nowrap<?= $pageActive ? ' active' : ''; ?>"
+                <?= $pageActive ? ' aria-current="page"' : ''; ?>>
                 <a href="<?= $this->url(sprintf('log/%d', $pagerItem)) . $trailing; ?>" class="page-link">
                     <?= $this->escape($numberFormatter->format($pagerItem)); ?>
                 </a>
             </li>
         <?php } ?>
         <?php if ($page < $pageCount) { ?>
-            <li class="page-item">
+            <li class="page-item text-nowrap">
                 <a class="page-link" href="<?= $this->url(sprintf('log/%d', $page + 1)) . $trailing; ?>">&gt;</a>
             </li>
-            <li class="page-item">
+            <li class="page-item text-nowrap">
                 <a class="page-link" href="<?= $this->url(sprintf('log/%d', $pageCount)) . $trailing; ?>">&gt;|</a>
             </li>
         <?php } ?>
