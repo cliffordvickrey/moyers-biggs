@@ -45,14 +45,14 @@ if ('est' !== $this->timeZone) {
         <?php } ?>
     </select>
 </div>
-<table class="table table-bordered table-responsive table-sm mt-3">
+<table class="table table-bordered table-responsive table-sm mt-3" style="table-layout: fixed;">
     <colgroup>
         <col span="4" class="w-25">
     </colgroup>
     <thead>
     <tr>
         <th>Event ID</th>
-        <th>Submitted</th>
+        <th>Date</th>
         <th>Time<span class="d-none d-sm-inline"> Spent</span></th>
         <th>Answers</th>
     </tr>
@@ -86,9 +86,9 @@ if ('est' !== $this->timeZone) {
                     <?= $this->escape($firstPart); ?>
                 </a>
             </td>
-            <td>
+            <td class="text-truncate text-nowrap overflow-hidden">
                 <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="<?= $this->escape($time); ?>"
-                   class="d-block d-sm-none text-truncate overflow-hidden" style="max-width: 100%;">
+                   class="d-inline d-sm-none text-truncate overflow-hidden" style="max-width: 100%;">
                     <?= $this->escape($time); ?>
                 </a>
                 <div class="d-none d-sm-block">
@@ -96,7 +96,8 @@ if ('est' !== $this->timeZone) {
                 </div>
             </td>
             <td>
-                <?= $seconds; ?> sec<span class="d-none d-sm-inline">onds</span>
+                <?= $seconds; ?><span class="d-inline d-sm-none">s</span><span
+                        class="d-none d-sm-inline"> seconds</span>
             </td>
             <td>
                 <?php foreach ($event as $questionId => $answerId) {
