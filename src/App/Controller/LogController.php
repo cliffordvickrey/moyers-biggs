@@ -59,14 +59,15 @@ final class LogController implements ControllerInterface
         $questionnaireId = (int)$request->getId(Route::ATTRIBUTE_QUESTIONNAIRE_ID);
         $page = $request->getId(Route::ATTRIBUTE_PAGE) ?: 1;
 
-        $offset = ($page - 1) * $this->recordsPerPage;
-
-        $events = $this->eventRepository->getEvents($questionnaireId, $offset, $this->recordsPerPage);
         $pageCount = (int)ceil($this->eventRepository->getCount($questionnaireId) / $this->recordsPerPage) ?: 1;
 
         if ($page > $pageCount) {
             $page = $pageCount;
         }
+
+        $offset = ($page - 1) * $this->recordsPerPage;
+
+        $events = $this->eventRepository->getEvents($questionnaireId, $offset, $this->recordsPerPage);
 
         $viewModel = new ViewModel();
         $viewModel->setPartial('log');
