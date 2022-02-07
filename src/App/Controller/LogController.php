@@ -59,6 +59,10 @@ final class LogController implements ControllerInterface
         $questionnaireId = (int)$request->getId(Route::ATTRIBUTE_QUESTIONNAIRE_ID);
         $page = $request->getId(Route::ATTRIBUTE_PAGE) ?: 1;
 
+        /**
+         * @var positive-int $pageCount
+         * @noinspection PhpRedundantVariableDocTypeInspection
+         */
         $pageCount = (int)ceil($this->eventRepository->getCount($questionnaireId) / $this->recordsPerPage) ?: 1;
 
         if ($page > $pageCount) {

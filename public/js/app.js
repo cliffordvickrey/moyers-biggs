@@ -19,7 +19,7 @@
             return new bootstrap.Popover(popoverTriggerEl, {trigger: 'hover focus'});
         });
 
-        var timeZoneSelect = document.getElementById("time-zone");
+        var timeZoneSelect = document.getElementById('time-zone');
 
         if (null === timeZoneSelect) {
             return;
