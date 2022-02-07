@@ -80,9 +80,9 @@ if ('est' !== $this->timeZone) {
 
         ?>
         <tr>
-            <td>
-                <a href="#" data-bs-toggle="tooltip" data-bs-placement="top"
-                   title="<?= $this->escape($id); ?>">
+            <td class="text-truncate text-nowrap overflow-hidden">
+                <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="<?= $this->escape($id); ?>"
+                   class="text-truncate overflow-hidden" style="max-width: 100%;">
                     <?= $this->escape($firstPart); ?>
                 </a>
             </td>
