@@ -71,7 +71,7 @@ class ConfigProvider
             LogController::class => $this->getLogControllerConfig(),
             Questionnaire::class => $this->getQuestionnaireConfig(),
             'root' => '/',
-            'version' => '1.0'
+            'version' => '1.0.0'
         ];
     }
 

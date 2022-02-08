@@ -26,9 +26,7 @@
         }
 
         timeZoneSelect.addEventListener('change', function () {
-            var form = document.getElementById('time-zone-form');
-            form.elements['timezone'].value = this.value;
-            form.submit();
+            document.getElementById('time-zone-form').submit();
         });
     });
 })();

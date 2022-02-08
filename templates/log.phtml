@@ -32,19 +32,21 @@ if ('est' !== $this->timeZone) {
 
 ?>
 <h5 class="card-title">Log <span class="text-muted"><?= sprintf('(page %d of %d)', $page, $pageCount); ?></span></h5>
-<div class="input-group my-3">
-    <span class="input-group-text" id="time-zone-addon">Time Zone</span>
-    <select id="time-zone" class="form-select" autocomplete="off" aria-label="Time Zone"
-            aria-describedby="time-zone-addon">
-        <?php foreach ($this->timeZones as $timeZoneId => $timeZoneDescription) {
-            $selected = $this->timeZone === $timeZoneId ? ' selected="selected"' : '';
-            ?>
-            <option value="<?= $this->escape((string)$timeZoneId); ?>"<?= $selected; ?>>
-                <?= $this->escape($timeZoneDescription); ?>
-            </option>
-        <?php } ?>
-    </select>
-</div>
+<form id="time-zone-form" method="get" action="<?= $this->url(sprintf('log/%d', $page)); ?>">
+    <div class="input-group my-3">
+        <span class="input-group-text" id="time-zone-addon">Time Zone</span>
+        <select id="time-zone" class="form-select" autocomplete="off" aria-label="Time Zone"
+                aria-describedby="time-zone-addon" name="timezone">
+            <?php foreach ($this->timeZones as $timeZoneId => $timeZoneDescription) {
+                $selected = $this->timeZone === $timeZoneId ? ' selected="selected"' : '';
+                ?>
+                <option value="<?= $this->escape((string)$timeZoneId); ?>"<?= $selected; ?>>
+                    <?= $this->escape($timeZoneDescription); ?>
+                </option>
+            <?php } ?>
+        </select>
+    </div>
+</form>
 <table class="table table-bordered table-responsive table-sm mt-3" style="table-layout: fixed;">
     <colgroup>
         <col span="4" class="w-25">
@@ -143,6 +145,3 @@ if ('est' !== $this->timeZone) {
         <?php } ?>
     </ul>
 </nav>
-<form id="time-zone-form" method="get" action="<?= $this->url(sprintf('log/%d', $page)); ?>" class="d-none">
-    <input type="hidden" name="timezone" value=""/>
-</form>
