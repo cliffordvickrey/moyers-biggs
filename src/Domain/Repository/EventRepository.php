@@ -60,6 +60,7 @@ class EventRepository implements EventRepositoryInterface
         );
 
         $file = $this->io->openFileForWriting($fileName);
+        $file->lock();
         $eventCollection = $this->load($file);
         $eventCollection->unshift($event);
 
