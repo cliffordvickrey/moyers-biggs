@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use CliffordVickrey\MoyersBiggs\Domain\Entity\Questionnaire;
-use CliffordVickrey\MoyersBiggs\Domain\Enum\Valence;
 
 /** @var Questionnaire $questionnaire */
 $questionnaire = $this->questionnaire;
@@ -13,11 +12,6 @@ $numberFormatter = new NumberFormatter('en_US', NumberFormatter::DECIMAL);
 $percentFormatter = new NumberFormatter('en_US', NumberFormatter::PERCENT);
 $percentFormatter->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 2);
 $percentFormatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 2);
-
-$frequenciesByValence = [
-    Valence::BIGGS => 0,
-    Valence::MOYERS => 0
-];
 
 $score = $questionnaire->getAverageScore();
 $type = $score->getValence()->toType();
